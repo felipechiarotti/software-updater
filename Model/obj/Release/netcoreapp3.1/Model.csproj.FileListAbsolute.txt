@@ -1,0 +1,16 @@
+C:\Users\felip\source\repos\MinecraftServerUpdater\Model\bin\Release\netcoreapp3.1\Model.deps.json
+C:\Users\felip\source\repos\MinecraftServerUpdater\Model\bin\Release\netcoreapp3.1\Model.dll
+C:\Users\felip\source\repos\MinecraftServerUpdater\Model\bin\Release\netcoreapp3.1\Model.pdb
+C:\Users\felip\source\repos\MinecraftServerUpdater\Model\obj\Release\netcoreapp3.1\Model.AssemblyInfoInputs.cache
+C:\Users\felip\source\repos\MinecraftServerUpdater\Model\obj\Release\netcoreapp3.1\Model.AssemblyInfo.cs
+C:\Users\felip\source\repos\MinecraftServerUpdater\Model\obj\Release\netcoreapp3.1\Model.csproj.CoreCompileInputs.cache
+C:\Users\felip\source\repos\MinecraftServerUpdater\Model\obj\Release\netcoreapp3.1\Model.dll
+C:\Users\felip\source\repos\MinecraftServerUpdater\Model\obj\Release\netcoreapp3.1\Model.pdb
+E:\Workspace\Projects\SoftwareUpdater\Model\bin\Release\netcoreapp3.1\Model.deps.json
+E:\Workspace\Projects\SoftwareUpdater\Model\bin\Release\netcoreapp3.1\Model.dll
+E:\Workspace\Projects\SoftwareUpdater\Model\bin\Release\netcoreapp3.1\Model.pdb
+E:\Workspace\Projects\SoftwareUpdater\Model\obj\Release\netcoreapp3.1\Model.AssemblyInfoInputs.cache
+E:\Workspace\Projects\SoftwareUpdater\Model\obj\Release\netcoreapp3.1\Model.AssemblyInfo.cs
+E:\Workspace\Projects\SoftwareUpdater\Model\obj\Release\netcoreapp3.1\Model.csproj.CoreCompileInputs.cache
+E:\Workspace\Projects\SoftwareUpdater\Model\obj\Release\netcoreapp3.1\Model.dll
+E:\Workspace\Projects\SoftwareUpdater\Model\obj\Release\netcoreapp3.1\Model.pdb

@@ -1,0 +1,14 @@
+E:\Workspace\Projects\SoftwareUpdater\Launcher\bin\Release\netcoreapp3.1\Launcher.deps.json
+E:\Workspace\Projects\SoftwareUpdater\Launcher\bin\Release\netcoreapp3.1\Launcher.dll
+E:\Workspace\Projects\SoftwareUpdater\Launcher\bin\Release\netcoreapp3.1\Launcher.pdb
+E:\Workspace\Projects\SoftwareUpdater\Launcher\bin\Release\netcoreapp3.1\Model.dll
+E:\Workspace\Projects\SoftwareUpdater\Launcher\bin\Release\netcoreapp3.1\Updater.dll
+E:\Workspace\Projects\SoftwareUpdater\Launcher\bin\Release\netcoreapp3.1\Updater.pdb
+E:\Workspace\Projects\SoftwareUpdater\Launcher\bin\Release\netcoreapp3.1\Model.pdb
+E:\Workspace\Projects\SoftwareUpdater\Launcher\obj\Release\netcoreapp3.1\Launcher.AssemblyInfoInputs.cache
+E:\Workspace\Projects\SoftwareUpdater\Launcher\obj\Release\netcoreapp3.1\Launcher.AssemblyInfo.cs
+E:\Workspace\Projects\SoftwareUpdater\Launcher\obj\Release\netcoreapp3.1\Launcher.csproj.CoreCompileInputs.cache
+E:\Workspace\Projects\SoftwareUpdater\Launcher\obj\Release\netcoreapp3.1\Launcher.csproj.CopyComplete
+E:\Workspace\Projects\SoftwareUpdater\Launcher\obj\Release\netcoreapp3.1\Launcher.dll
+E:\Workspace\Projects\SoftwareUpdater\Launcher\obj\Release\netcoreapp3.1\Launcher.pdb
+E:\Workspace\Projects\SoftwareUpdater\Launcher\obj\Release\netcoreapp3.1\Launcher.csprojAssemblyReference.cache
