@@ -2,7 +2,10 @@
 using Model;
 
 using System.Diagnostics;
+using System.Net;
+using System.Threading.Tasks;
 
+using System.ComponentModel;
 
 namespace Updater
 {
@@ -11,71 +14,127 @@ namespace Updater
         private string ServerVersionURL;
         private string ServerFilesURL;
         private string BasePath;
-        private string FileVersionName;
         private string PathToExtract;
+        private string LocalVersionFile;
         private InfoMessageDelegate InfoMessage;
 
+        private bool Retry;
 
-        public UpdaterController(string serverURL, string serverFilesURL, string fileVersionName, string pathToExtract, Action<string> infoMessage)
+
+        public UpdaterController(string serverURL, string serverFilesURL, string pathToExtract, string localVersionFilePath, Action<string, string, eStatus, string> infoMessage)
         {
             ServerVersionURL = serverURL;
             ServerFilesURL = serverFilesURL;
-            BasePath = FileHandler.GetCurrentDirectory()+"\\";
-            FileVersionName = fileVersionName;
-            PathToExtract = pathToExtract+"\\";
-            InfoMessage = new InfoMessageDelegate(infoMessage != null ? infoMessage : (string text)=>{ });
+            BasePath = FileHandler.GetCurrentDirectory() + "\\";
+            PathToExtract = pathToExtract + "\\";
+            LocalVersionFile = localVersionFilePath;
+            InfoMessage = new InfoMessageDelegate(infoMessage);
         }
 
-        public void runUpdater()
+        public async Task runUpdater(string exeToExecute)
         {
-            InfoMessage("Procurando por atualizações...");
-            if (!Model.Version.isUpdated(FileVersionName, ServerVersionURL))
+            InfoMessage("Procurando atualizações", "Aguarde um momento", eStatus.SearchingUpdates);
+            try
             {
-                updateSoftware();
+                if (!await Model.Version.IsUpdated(ServerVersionURL, LocalVersionFile))
+                {
+                    await updateSoftware();
+                }
+                runProgram(exeToExecute);
+            }
+            catch (WebException)
+            {
+                InfoMessage("Erro", "Problemas de conexão", eStatus.Error);
+            }
+            catch (Win32Exception)
+            {
+                InfoMessage("Erro", "Não foi possível iniciar o programa", eStatus.Error);
+            }
+            catch (Exception ex)
+            {
+                InfoMessage("Erro", "Falha ao instalar atualizações", eStatus.Error, ex.Message);
+                ClearUpdateFiles();
+                UpdateVersionFile(Model.Version.LocalVersion);
+                Retry = true;
+            }
+            finally
+            {
+
+                   
+                await Task.Delay(2500);
+                if(Retry)
+                    InfoMessage("Erro", "Tentando novamente em 3 segundos", eStatus.SearchingUpdates);
+                await Task.Delay(2500);
+                if (Retry )
+                {
+                    await runUpdater(exeToExecute);
+                    Retry = false;
+                }
             }
         }
 
-        private void updateSoftware()
+        private async Task updateSoftware()
         {
-            InfoMessage("Baixando a versão: " + Model.Version.ServerVersion);
-            downloadUpdate();
 
-            InfoMessage($"Atualizando da versão {Model.Version.LocalVersion} para {Model.Version.ServerVersion}");
+            await DownloadUpdate();
+
+            InfoMessage("Instalando Atualizações", $"Atualizando da versão {Model.Version.LocalVersion} para {Model.Version.ServerVersion}", eStatus.InstallingUpdates);
             updateLocalFiles();
         }
 
-        private  void downloadUpdate()
+        private async Task DownloadUpdate()
         {
-            RequestHandler.DownloadLatestVersion(ServerFilesURL + "/" + Model.Version.ServerVersion + ".zip", BasePath + "\\" + Model.Version.ServerVersion + ".zip");
+            await RequestHandler.DownloadLatestVersion(ServerFilesURL + "/" + Model.Version.ServerVersion + ".zip", BasePath + "\\" + Model.Version.ServerVersion + ".zip", (object sender, DownloadProgressChangedEventArgs e) =>
+            {
+                InfoMessage("Baixando Atualizações", $"{e.ProgressPercentage}% Baixado", eStatus.DownloadingUpdates, $"{e.BytesReceived / 1024} / {e.TotalBytesToReceive / 1024}KB");
+
+            });
+
+
+            InfoMessage("Instalando Atualizações", "Extraindo arquivos", eStatus.DownloadingUpdates);
             FileHandler.ExtractZip(BasePath + "\\" + Model.Version.ServerVersion + ".zip", BasePath + PathToExtract + Model.Version.ServerVersion);
         }
 
         private void updateLocalFiles()
         {
-            var filesName = FileHandler.GetFilesInFolder(BasePath + PathToExtract +Model.Version.ServerVersion);
+            var filesName = FileHandler.GetFilesInFolder(BasePath + PathToExtract + Model.Version.ServerVersion);
 
-            FileHandler.DeleteFile(BasePath+PathToExtract + filesName);
+            InfoMessage("Instalando Atualizações", "Aplicando arquivos atualizados", eStatus.DownloadingUpdates);
 
-            FileHandler.MoveFilesFromTo(BasePath+ PathToExtract + Model.Version.ServerVersion, BasePath+ PathToExtract, filesName);
+            FileHandler.MoveFilesFromTo(BasePath + PathToExtract + Model.Version.ServerVersion, BasePath + PathToExtract, filesName);
+            ClearUpdateFiles();
+            UpdateVersionFile(Model.Version.ServerVersion);
+        }
+
+        private void ClearUpdateFiles()
+        {
+            var filesName = FileHandler.GetFilesInFolder(BasePath + PathToExtract + Model.Version.ServerVersion);
+            FileHandler.DeleteFile(BasePath + PathToExtract + filesName);
             FileHandler.DeleteDirectory(BasePath + PathToExtract + Model.Version.ServerVersion);
             FileHandler.DeleteFile(Model.Version.ServerVersion + ".zip");
-            FileHandler.OverwriteFile(FileVersionName, Model.Version.ServerVersion);
-
-
         }
-        public void runProgram(string exeFileName)
+
+        private void UpdateVersionFile(string version)
         {
-            InfoMessage("Iniciando o programa");
+            FileHandler.OverwriteFile(Model.Version.ServerVersion, LocalVersionFile);
+        }
+
+
+        private void runProgram(string exeFileName)
+        {
+            InfoMessage("Atualização Completa", "Iniciando a aplicação", eStatus.FinishedUpdates);
             var startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = BasePath + PathToExtract,
-                FileName = BasePath + PathToExtract +exeFileName
+                FileName = BasePath + PathToExtract + exeFileName
             };
             Process.Start(startInfo);
-            System.Environment.Exit(0);
         }
 
-        public delegate void InfoMessageDelegate(string text);
+
+
+        public delegate void InfoMessageDelegate(string title, string description, eStatus status, string downloadSize = "");
+
 
     }
 }
